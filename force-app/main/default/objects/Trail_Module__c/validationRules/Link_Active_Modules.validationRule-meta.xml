@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Link_Active_Modules</fullName>
+    <active>true</active>
+    <description>You need link an active Module to a Trail</description>
+    <errorConditionFormula>!(Module__r.Is_Active__c)</errorConditionFormula>
+    <errorMessage>You can&apos;t link an inactive Module to a Trail</errorMessage>
+</ValidationRule>
