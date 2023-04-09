@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rank__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Points__c &gt;= 0 &amp;&amp; Points__c &lt; 200 , &apos;SCOUT&apos;,
+ IF(Points__c &gt;= 200 &amp;&amp; Points__c &lt; 3000 , &apos;HIKER&apos;,
+ IF(Points__c &gt;= 3000 &amp;&amp; Points__c &lt; 9000 , &apos;EXPLORER&apos;,
+ IF(Points__c &gt;= 9000 &amp;&amp; Points__c &lt; 18000 , &apos;ADVENTURER&apos;,
+ IF(Points__c &gt;= 18000 &amp;&amp; Points__c &lt; 35000 , &apos;EXPEDITIONER&apos;,
+ &apos;RANGER&apos;))))
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Rank</label>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

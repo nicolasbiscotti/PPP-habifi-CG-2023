@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Activate_Module</fullName>
+    <active>true</active>
+    <description>Only Activate if Role and Skill has any value</description>
+    <errorConditionFormula>(ISPICKVAL(Skills__c, &quot;&quot;) || ISPICKVAL(Role__c, &quot;&quot;)) &amp;&amp;  Is_Active__c</errorConditionFormula>
+    <errorDisplayField>Is_Active__c</errorDisplayField>
+    <errorMessage>Module Whithout Skills or Role can&apos;t be activated</errorMessage>
+</ValidationRule>
