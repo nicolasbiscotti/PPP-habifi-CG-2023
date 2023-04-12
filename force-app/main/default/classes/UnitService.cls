@@ -8,16 +8,16 @@ public with sharing class UnitService {
       Map<Id, Id>.class
     );
 
-    User_Unit__c unitModuleResponse = new User_Unit__c(
+    User_Unit__c userUnitResponse = new User_Unit__c(
       Status__c = 'Draft',
       Unit__c = unitId,
       User__c = currentUserId
     );
 
     // ToDo: check if the user did make an attempt to answer this unit
-    //       if true -> asign the User_Module Id to the unitModuleResponse
+    //       if true -> asign the User_Module Id to the userUnitResponse
     //       if false -> create a new User_Module for currentUser with Status inProgress
-    //                   and asign the new User_Module  Id to the unitModuleResponse
+    //                   and asign the new User_Module  Id to the userUnitResponse
     User_Module__c currentModule;
 
     Unit__c unit = [SELECT Id, Module__c FROM Unit__c WHERE Id = :unitId];
@@ -39,9 +39,9 @@ public with sharing class UnitService {
       insert currentModule;
     }
 
-    unitModuleResponse.User_Module__c = currentModule.Id;
+    userUnitResponse.User_Module__c = currentModule.Id;
 
-    insert unitModuleResponse;
+    insert userUnitResponse;
 
     // create the option(Unit_Question_Answer__c sObjects) for the
     // curent attempt to complete the Unit
@@ -49,7 +49,7 @@ public with sharing class UnitService {
     for (String questionId : questionAnswerMap.keySet()) {
       String answerId = questionAnswerMap.get(questionId);
       Unit_Question_Answer__c option = new Unit_Question_Answer__c(
-        User_Unit__c = unitModuleResponse.Id,
+        User_Unit__c = userUnitResponse.Id,
         Question__c = questionId,
         Answer__c = answerId
       );
@@ -58,7 +58,7 @@ public with sharing class UnitService {
 
     insert questionAnswerList;
 
-    unitModuleResponse.Status__c = 'Answered';
-    update unitModuleResponse;
+    userUnitResponse.Status__c = 'Answered';
+    update userUnitResponse;
   }
 }
