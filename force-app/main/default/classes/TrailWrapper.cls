@@ -63,7 +63,8 @@ public with sharing class TrailWrapper {
         Role__c,
         Skills__c,
         Total_Points__c,
-        Unit_Count__c
+        Unit_Count__c,
+        (SELECT Id, Name, Points__c, Duration__c FROM Units__r)
       FROM Module__c
       WHERE Id IN :this.moduleIds
     ];
