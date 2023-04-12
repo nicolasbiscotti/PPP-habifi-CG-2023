@@ -22,7 +22,7 @@ public with sharing class UserUnitResponseHelper {
         SELECT
           Id,
           (
-            SELECT Status__c, Unit__r.Points__c
+            SELECT User__c, Unit__c, Status__c, Unit__r.Points__c
             FROM User_Units__r
             WHERE
               User__c IN :usersTryingToAnswer
