@@ -1,19 +1,21 @@
 public with sharing class TrailWrapper {
   private final String SUCCESS_UNIT = 'Success';
+  private final String COMPLETED_MODULE = 'Completed';
 
   private Id userId;
   private Id trailId;
+  private List<User_Module__c> userModulesWithUserUnits;
   private Set<Id> moduleIds = new Set<Id>();
 
-  // // CHECK Módulos con Unidades relacionadas
+  // CHECK Módulos con Unidades relacionadas
   private List<Module__c> modules = new List<Module__c>();
-  // // CHECK Ids de módulos relacionados al Trail actual en los que el Alumno ya aprobó
+  // CHECK Ids de módulos relacionados al Trail actual en los que el Alumno ya aprobó
   private Set<Id> passedModuleIds = new Set<Id>();
-  //Ids de Unidades relacionadas a módulos del Trail actual que el Alumno ya aprobó
+  // CHECK Ids de Unidades relacionadas a módulos del Trail actual que el Alumno ya aprobó
   private Set<Id> passedUnitIds = new Set<Id>();
-  // // CHECK Registro de Trail solicitado
+  // CHECK Registro de Trail solicitado
   public Trail__c trail;
-  //Porcentaje de progreso del Alumno en el Trail
+  // CHECK Porcentaje de progreso del Alumno en el Trail
   public Integer progressTrail;
 
   public TrailWrapper(Id trailId, Id userId) {
@@ -24,13 +26,24 @@ public with sharing class TrailWrapper {
 
   private void initializeProperties(Id trailId) {
     this.queryTrail();
-    this.fillModuleIds();
+    this.setModuleIds();
+
     this.queryModules();
+
     this.queryPassedModulesAndUnits();
+    this.setPassedModulesAndUnits();
+
+    this.setProgress();
+  }
+
+  private void setProgress() {
+    Decimal totalModules = moduleIds.size();
+    Decimal passedModules = passedModuleIds.size();
+    this.progressTrail = ((passedModules / totalModules) * 100).intValue();
   }
 
   private void queryPassedModulesAndUnits() {
-    List<User_Module__c> userModulesWithUserUnits = [
+    this.userModulesWithUserUnits = [
       SELECT
         Id,
         Module__c,
@@ -39,15 +52,6 @@ public with sharing class TrailWrapper {
       FROM User_Module__c
       WHERE User__c = :this.userId AND Module__c IN :moduleIds
     ];
-
-    for (User_Module__c userModule : userModulesWithUserUnits) {
-      if (userModule.Status__c == 'Completed') {
-        this.passedModuleIds.add(userModule.Module__c);
-      }
-      for (User_Unit__c userUnit : userModule.User_Units__r) {
-        this.passedUnitIds.add(userUnit.Unit__c);
-      }
-    }
   }
 
   private void queryModules() {
@@ -81,7 +85,18 @@ public with sharing class TrailWrapper {
     ];
   }
 
-  private void fillModuleIds() {
+  private void setPassedModulesAndUnits() {
+    for (User_Module__c userModule : this.userModulesWithUserUnits) {
+      if (userModule.Status__c == COMPLETED_MODULE) {
+        this.passedModuleIds.add(userModule.Module__c);
+      }
+      for (User_Unit__c userUnit : userModule.User_Units__r) {
+        this.passedUnitIds.add(userUnit.Unit__c);
+      }
+    }
+  }
+
+  private void setModuleIds() {
     for (Trail_Module__c trailModule : this.trail.Trail_Modules__r) {
       this.moduleIds.add(trailModule.Module__c);
     }
