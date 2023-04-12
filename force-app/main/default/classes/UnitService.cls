@@ -1,14 +1,14 @@
 public with sharing class UnitService {
   
   @AuraEnabled(cacheable=true)
-  public static TrailWrapper getTrailInfo(Id trailId) {
+  public static TrailWrapper getTrailWrapper(Id trailId) {
     Id currentUserId = UserInfo.getUserId();
     TrailWrapper trail = new TrailWrapper(trailId, currentUserId);
     return trail;
   }
 
   @AuraEnabled(cacheable=true)
-  public static UnitWrapper getUnitInfo(Id unitId) {
+  public static UnitWrapper getUnitWrapper(Id unitId) {
     UnitWrapper unit = new UnitWrapper(unitId);
     return unit; 
   }
