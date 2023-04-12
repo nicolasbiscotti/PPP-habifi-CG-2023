@@ -22,7 +22,7 @@ public with sharing class UserUnitResponseHelper {
         SELECT
           Id,
           (
-            SELECT Status__c, Unit__r.Points__c
+            SELECT User__c, Unit__c, Status__c, Unit__r.Points__c
             FROM User_Units__r
             WHERE
               User__c IN :usersTryingToAnswer
@@ -38,12 +38,12 @@ public with sharing class UserUnitResponseHelper {
       fillPointsAndAttempts(pointsByUnit, failedAttemptsByUser, userModuleWithAttempts);
 
       List<Unit_Question_Answer__c> answerResult = [
-        SELECT Answer__r.Is_Correct__c, User_Unit__c
+        SELECT User_Unit__r.Unit__c, User_Unit__r.Unit__r.Points__c, Answer__r.Is_Correct__c, User_Unit__c
         FROM Unit_Question_Answer__c
         WHERE User_Unit__c IN :draftToAnswered
       ];
 
-      Map<Id, Boolean> isSuccessByUserUnit = createSuccessMap(answerResult);
+      Map<Id, Boolean> isSuccessByUserUnit = createSuccessMap(answerResult, pointsByUnit);
 
       for (User_Unit__c toUpdate : draftToAnswered) {
         if (isSuccessByUserUnit.get(toUpdate.Id)) {
@@ -120,7 +120,7 @@ public with sharing class UserUnitResponseHelper {
     return isAnswered && wasDraft;
   }
 
-  public static Map<Id, Boolean> createSuccessMap(List<Unit_Question_Answer__c> answerResult) {
+  public static Map<Id, Boolean> createSuccessMap(List<Unit_Question_Answer__c> answerResult, Map<Id, Decimal> pointsByUnit) {
     Map<Id, Boolean> successMap = new Map<Id, Boolean>();
 
     for (Unit_Question_Answer__c result : answerResult) {
@@ -133,6 +133,10 @@ public with sharing class UserUnitResponseHelper {
         Boolean isCorrect = result.Answer__r.Is_Correct__c == 'Yes';
         successMap.put(userUnitId, isCorrect);
       }
+
+      Decimal points = result.User_Unit__r.Unit__r.Points__c;
+      Id unitId = result.User_Unit__r.Unit__c;
+      pointsByUnit.put(unitId, points);
     }
 
     return successMap;
