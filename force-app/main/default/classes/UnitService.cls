@@ -1,4 +1,19 @@
 public with sharing class UnitService {
+  
+  @AuraEnabled(cacheable=true)
+  public static TrailWrapper getTrailInfo(Id trailId) {
+    Id currentUserId = UserInfo.getUserId();
+    TrailWrapper trail = new TrailWrapper(trailId, currentUserId);
+    return trail;
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static UnitWrapper getUnitInfo(Id unitId) {
+    UnitWrapper unit = new UnitWrapper(unitId);
+    return unit; 
+  }
+  
+  
   public static void unitResponseProcess(Id unitId, String questionAnswer) {
     // grab the logged userId
     Id currentUserId = UserInfo.getUserId();
@@ -61,4 +76,6 @@ public with sharing class UnitService {
     userUnitResponse.Status__c = 'Answered';
     update userUnitResponse;
   }
+
+
 }
