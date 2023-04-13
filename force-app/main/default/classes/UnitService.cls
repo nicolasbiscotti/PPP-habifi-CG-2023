@@ -13,8 +13,8 @@ public with sharing class UnitService {
     return JSON.serialize(wrapper); 
   }
   
-  
-  public static void unitResponseProcess(Id unitId, String questionAnswer) {
+  @AuraEnabled(cacheable=false)
+  public static String unitResponseProcess(Id unitId, String questionAnswer) {
     // grab the logged userId
     Id currentUserId = UserInfo.getUserId();
 
@@ -75,6 +75,7 @@ public with sharing class UnitService {
 
     userUnitResponse.Status__c = 'Answered';
     update userUnitResponse;
+    return 'Quiz Answerred';
   }
 
 

@@ -1,4 +1,5 @@
 import getUnitWrapper from "@salesforce/apex/UnitService.getUnitWrapper";
+import unitResponseProcess from "@salesforce/apex/UnitService.unitResponseProcess";
 import { LightningElement, api, wire } from "lwc";
 
 export default class UnitView extends LightningElement {
@@ -25,13 +26,35 @@ export default class UnitView extends LightningElement {
     this.setAnswer(questionId, answerId);
   }
 
+  handleClick() {
+    this.checkQuiz();
+  }
+
+  handleQuizResult(result) {
+    
+  }
+  handleQuizError(error) {
+    
+  }
+
   @wire(getUnitWrapper, { unitId: "$unitId" })
   wireUnitWrapper({ data, error }) {
     if (data) {
       this.parseWrapper(data);
     } else if (error) {
-      console.log("error unitView: ", error);
+      
     }
+  }
+
+  checkQuiz() {
+    this.setLoading(true);
+    const questionAnswer = JSON.stringify(this.userResponse);
+    
+    
+    unitResponseProcess({ unitId: this.unitId, questionAnswer })
+      .then((result) => this.handleQuizResult(result))
+      .catch((error) => this.handleQuizError(error))
+      .finally(() => this.setLoading(false));
   }
 
   parseWrapper(stringFormatData) {
@@ -40,7 +63,7 @@ export default class UnitView extends LightningElement {
     this.setQuestionWithAnswers(unitWrapper);
     this.setLoading(false);
 
-    console.log("unitWrapper unitView: ", unitWrapper);
+    
   }
 
   setBasicInfo({ unit }) {
@@ -78,5 +101,9 @@ export default class UnitView extends LightningElement {
   }
   set recordId(value) {
     this.unitId = value;
+  }
+
+  get checkQuizText() {
+    return `Check the Quiz to Earn ${this.points} Point`;
   }
 }
