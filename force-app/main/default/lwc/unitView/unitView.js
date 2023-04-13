@@ -14,6 +14,17 @@ export default class UnitView extends LightningElement {
 
   questions;
 
+  userResponse = {};
+
+  setAnswer(questionId, answerId) {
+    this.userResponse[questionId] = answerId;
+  }
+
+  handleAnswerSelected(event) {
+    const { questionId, answerId } = event.detail;
+    this.setAnswer(questionId, answerId);
+  }
+
   @wire(getUnitWrapper, { unitId: "$unitId" })
   wireUnitWrapper({ data, error }) {
     if (data) {

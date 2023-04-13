@@ -20,19 +20,11 @@
       </div>
 
       <template for:each={questions} for:item="question">
-
         <lightning-card key={question.id}>
-
           <h1 slot="title">{question.content}</h1>
-
-          <ol>
-            <template for:each={question.answers} for:item="answer">
-              <li key={answer.id}>{answer.content}</li>
-            </template>
-          </ol>
-
+          <c-question-view id={question.id} answers={question.answers}>
+          </c-question-view>
         </lightning-card>
-
       </template>
     </lightning-card>
   </div>
