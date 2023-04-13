@@ -1,6 +1,23 @@
 <template>
-  <lightning-card title={trailName}>
-    <p class="slds-p-horizontal_small">Estimeted Time: {trailDuration} - Total Points: {trailPoints}</p>
+  <div class="slds-m-around_medium">
+
+    <h1 class="slds-text-heading_large">{trailName}</h1>
+
+    <p class="slds-text-body_regular">
+      Estimeted Time: {trailDuration} - Total Points: {trailPoints}
+    </p>
+
     <p class="slds-p-horizontal_small">{trailDescription}</p>
-  </lightning-card>
+
+    <template for:each={modules} for:item="module">
+      <div key={module.Id} class="slds-m-around_small">
+    
+        <lightning-card title={module.Name}>
+          <p class="slds-p-horizontal_small">{module.Description__c}</p>
+        </lightning-card>
+    
+      </div>
+    </template>
+
+  </div>
 </template>
