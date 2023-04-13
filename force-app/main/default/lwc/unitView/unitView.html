@@ -1,0 +1,39 @@
+<template>
+  <div class="slds-m-around_medium">
+    <h1 class="slds-text-heading_large">{name}</h1>
+
+    <p class="slds-text-body_regular">
+      Points: {points} - Estimated Time: {duration}
+    </p>
+
+    <lightning-formatted-rich-text
+      value={content}
+    ></lightning-formatted-rich-text>
+
+    <lightning-card>
+      <h1 slot="title">Quiz</h1>
+
+      <div slot="footer">
+        <lightning-badge label="Tag1"></lightning-badge>
+        <lightning-badge label="Tag2"></lightning-badge>
+        <lightning-badge label="Tag3"></lightning-badge>
+      </div>
+
+      <template for:each={questions} for:item="question">
+
+        <lightning-card key={question.id}>
+
+          <h1 slot="title">{question.content}</h1>
+
+          <ol>
+            <template for:each={question.answers} for:item="answer">
+              <li key={answer.id}>{answer.content}</li>
+            </template>
+          </ol>
+
+        </lightning-card>
+
+      </template>
+    </lightning-card>
+  </div>
+</template>
