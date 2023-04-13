@@ -1,5 +1,5 @@
 import getTrailWrapper from "@salesforce/apex/UnitService.getTrailWrapper";
-import { LightningElement, api, wire } from "lwc";
+import { LightningElement, api, track, wire } from "lwc";
 
 export default class TrailView extends LightningElement {
   @api recordId;
@@ -9,7 +9,8 @@ export default class TrailView extends LightningElement {
   trailDuration;
   trailDescription;
 
-  modules;
+  @track modules;
+
   passedModuleIds;
   passedUnitIds;
 
@@ -26,6 +27,8 @@ export default class TrailView extends LightningElement {
     const trailWrapper = JSON.parse(stringFormatData);
     this.setTrail(trailWrapper);
     this.setModules(trailWrapper);
+    console.log("modules trailView", trailWrapper.modules);
+    console.log("passesModuleIds trailView", trailWrapper.passedModuleIds);
   }
 
   setTrail(trailWrapper) {
@@ -36,6 +39,5 @@ export default class TrailView extends LightningElement {
   }
   setModules(trailWrapper) {
     this.modules = trailWrapper.modules;
-    console.log("modules trailView", this.modules);
   }
 }
