@@ -25,21 +25,17 @@
 
           <ol class="slds-list_ordered">
             <template for:each={module.Units__r.records} for:item="unit">
-              <li key={unit.Id} class="slds-m-around_small">
-                {unit.Name} - Estimated Time: {unit.Duration__c} - Points:
-                {unit.Points__c}
-              </li>
-
-              <template if:true={passedUnitIds}>
-                <span
-                  key={unit.Id}
-                  class="slds-icon_container slds-icon-utility-check slds-icon_container_circle slds-icon_small slds-icon-text-default"
-                  title="Unit completed"
+              <div key={unit.id}>
+                <c-unit-tile
+                  onnavigate={navigateToRecordPage}
+                  id={unit.Id}
+                  name={unit.Name}
+                  duration={unit.Duration__c}
+                  points={unit.Points__c}
+                  passed-unit-ids={passedUnitIds}
                 >
-                  <lightning-icon icon-name="utility:check" size="x-small">
-                  </lightning-icon>
-                </span>
-              </template>
+                </c-unit-tile>
+              </div>
             </template>
           </ol>
         </lightning-card>

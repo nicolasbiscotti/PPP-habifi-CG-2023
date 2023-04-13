@@ -48,11 +48,11 @@ export default class TrailView extends NavigationMixin(LightningElement) {
     this.passesModuleIds = trailWrapper.passesModuleIds;
   }
 
-  navigateToRecordPage() {
+  navigateToRecordPage(event) {
     this[NavigationMixin.Navigate]({
       type: "standard__recordPage",
       attributes: {
-        recordId: this.recordId,
+        recordId: event.detail.unitId,
         objectApiName: "Unit__c",
         actionName: "view"
       }

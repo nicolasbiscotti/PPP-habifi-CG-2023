@@ -8,8 +8,9 @@ export default class UnitTile extends LightningElement {
   @api passedUnitIds;
 
   handleClick() {
-    this.dispatchEvent(new CustomEvent("navigate"), {
+    const navigateEvent = new CustomEvent("navigate", {
       detail: { unitId: this.id }
     });
+    this.dispatchEvent(navigateEvent);
   }
 }
