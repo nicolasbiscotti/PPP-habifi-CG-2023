@@ -42,6 +42,8 @@ export default class TrailView extends NavigationMixin(LightningElement) {
 
   setModules(trailWrapper) {
     this.modules = trailWrapper.modules;
+    console.log("modules View", trailWrapper.modules);
+    console.log("passesModuleIds View", trailWrapper.passedModuleIds);
   }
 
   setPassedModuleIds(trailWrapper) {
