@@ -1,7 +1,8 @@
 import getTrailWrapper from "@salesforce/apex/UnitService.getTrailWrapper";
 import { LightningElement, api, track, wire } from "lwc";
+import { NavigationMixin } from "lightning/navigation";
 
-export default class TrailView extends LightningElement {
+export default class TrailView extends NavigationMixin(LightningElement) {
   @api recordId;
 
   trailName;
@@ -27,6 +28,7 @@ export default class TrailView extends LightningElement {
     const trailWrapper = JSON.parse(stringFormatData);
     this.setTrail(trailWrapper);
     this.setModules(trailWrapper);
+    this.setPassedModuleIds(trailWrapper);
     console.log("modules trailView", trailWrapper.modules);
     console.log("passesModuleIds trailView", trailWrapper.passedModuleIds);
   }
@@ -37,7 +39,23 @@ export default class TrailView extends LightningElement {
     this.trailDuration = trailWrapper.trail.Duration__c;
     this.trailDescription = trailWrapper.trail.Description__c;
   }
+
   setModules(trailWrapper) {
     this.modules = trailWrapper.modules;
+  }
+
+  setPassedModuleIds(trailWrapper) {
+    this.passesModuleIds = trailWrapper.passesModuleIds;
+  }
+
+  navigateToRecordPage() {
+    this[NavigationMixin.Navigate]({
+      type: "standard__recordPage",
+      attributes: {
+        recordId: this.recordId,
+        objectApiName: "Unit__c",
+        actionName: "view"
+      }
+    });
   }
 }
