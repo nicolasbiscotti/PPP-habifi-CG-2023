@@ -1,0 +1,15 @@
+<template>
+  <li class="slds-m-around_small" onclick={handleClick}>
+    {name} - Estimated Time: {duration} - Points: {points}
+  </li>
+
+  <template if:true={passedUnitIds}>
+    <span
+      class="slds-icon_container slds-icon-utility-check slds-icon_container_circle slds-icon_small slds-icon-text-default"
+      title="Unit completed"
+    >
+      <lightning-icon icon-name="utility:check" size="x-small">
+      </lightning-icon>
+    </span>
+  </template>
+</template>

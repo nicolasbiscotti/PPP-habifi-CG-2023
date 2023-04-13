@@ -1,6 +1,5 @@
 <template>
   <div class="slds-m-around_medium">
-
     <h1 class="slds-text-heading_large">{trailName}</h1>
 
     <p class="slds-text-body_regular">
@@ -11,13 +10,36 @@
 
     <template for:each={modules} for:item="module">
       <div key={module.Id} class="slds-m-around_small">
-    
         <lightning-card title={module.Name}>
           <p class="slds-p-horizontal_small">{module.Description__c}</p>
+
+          <template if:true={passedModuleIds}>
+            <span
+              class="slds-icon_container slds-icon-utility-check slds-icon_container_circle slds-icon_small slds-icon-text-default"
+              title="Module completed"
+            >
+              <lightning-icon icon-name="utility:check" size="x-small">
+              </lightning-icon>
+            </span>
+          </template>
+
+          <ol class="slds-list_ordered">
+            <template for:each={module.Units__r.records} for:item="unit">
+              <div key={unit.id}>
+                <c-unit-tile
+                  onnavigate={navigateToRecordPage}
+                  id={unit.Id}
+                  name={unit.Name}
+                  duration={unit.Duration__c}
+                  points={unit.Points__c}
+                  passed-unit-ids={passedUnitIds}
+                >
+                </c-unit-tile>
+              </div>
+            </template>
+          </ol>
         </lightning-card>
-    
       </div>
     </template>
-
   </div>
 </template>
