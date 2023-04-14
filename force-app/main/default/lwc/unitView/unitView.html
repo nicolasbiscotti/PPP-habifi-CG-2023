@@ -14,15 +14,23 @@
       <h1 slot="title">Quiz</h1>
 
       <div slot="footer">
-        <lightning-badge label="Tag1"></lightning-badge>
-        <lightning-badge label="Tag2"></lightning-badge>
-        <lightning-badge label="Tag3"></lightning-badge>
+        <lightning-button
+          variant="success"
+          label={checkQuizText}
+          title="Check quiz"
+          onclick={handleClick}
+          class="slds-m-left_x-small"
+        ></lightning-button>
       </div>
 
       <template for:each={questions} for:item="question">
         <lightning-card key={question.id}>
           <h1 slot="title">{question.content}</h1>
-          <c-question-view id={question.id} answers={question.answers}>
+          <c-question-view
+            id={question.id}
+            answers={question.answers}
+            onanswerselected={handleAnswerSelected}
+          >
           </c-question-view>
         </lightning-card>
       </template>

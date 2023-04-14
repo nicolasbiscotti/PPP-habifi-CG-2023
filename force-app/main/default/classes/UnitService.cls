@@ -1,5 +1,4 @@
 public with sharing class UnitService {
-  
   @AuraEnabled(cacheable=true)
   public static String getTrailWrapper(Id trailId) {
     Id currentUserId = UserInfo.getUserId();
@@ -10,11 +9,11 @@ public with sharing class UnitService {
   @AuraEnabled(cacheable=true)
   public static String getUnitWrapper(Id unitId) {
     UnitWrapper wrapper = new UnitWrapper(unitId);
-    return JSON.serialize(wrapper); 
+    return JSON.serialize(wrapper);
   }
-  
-  
-  public static void unitResponseProcess(Id unitId, String questionAnswer) {
+
+  @AuraEnabled(cacheable=false)
+  public static String unitResponseProcess(Id unitId, String questionAnswer) {
     // grab the logged userId
     Id currentUserId = UserInfo.getUserId();
 
@@ -75,9 +74,21 @@ public with sharing class UnitService {
 
     userUnitResponse.Status__c = 'Answered';
     update userUnitResponse;
+
+    User_Unit__c userUnitResult = [
+      SELECT Status__c, Earned_Points__c
+      FROM User_Unit__c
+      WHERE Id = :userUnitResponse.Id
+    ];
+
+    if (userUnitResult.Status__c == 'Success') {
+      String message =
+        'Congratulations you earned ' +
+        userUnitResult.Earned_Points__c +
+        ' points';
+      return message;
+    } else {
+      return 'Wrong answer';
+    }
   }
-
-
 }
-
-

@@ -8,8 +8,14 @@ export default class QuestionView extends LightningElement {
   value = "";
 
   handleChange(event) {
-    console.log("unitView question", this.id);
-    console.log("unitView answer", event.detail.value);
+    const questionId = this.id.split("-")[0];
+    const answerId = event.detail.value;
+
+    const answerSelected = new CustomEvent("answerselected", {
+      detail: { questionId, answerId }
+    });
+
+    this.dispatchEvent(answerSelected);
   }
 
   @api

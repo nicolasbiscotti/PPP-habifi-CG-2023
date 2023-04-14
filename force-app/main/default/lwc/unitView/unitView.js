@@ -1,10 +1,17 @@
 import getUnitWrapper from "@salesforce/apex/UnitService.getUnitWrapper";
+import unitResponseProcess from "@salesforce/apex/UnitService.unitResponseProcess";
 import { LightningElement, api, wire } from "lwc";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
+
+const ERROR = "Wrong answer";
+const SUCCES_VARIANT = "success";
+const ERROR_VARIANT = "error";
 
 export default class UnitView extends LightningElement {
   unitId;
 
   isLoading = true;
+  failedAttempts = 0;
 
   name;
   points;
@@ -25,13 +32,40 @@ export default class UnitView extends LightningElement {
     this.setAnswer(questionId, answerId);
   }
 
+  handleClick() {
+    this.checkQuiz();
+  }
+
+  handleQuizResult(result) {
+    const toShow = { title: result };
+    if (result !== ERROR) {
+      toShow.variant = SUCCES_VARIANT;
+    } else {
+      toShow.variant = ERROR_VARIANT;
+      this.countFailAttempt();
+    }
+    this.showQuizResult(toShow);
+  }
+  handleQuizError(error) {
+    console.log("unitView", error);
+  }
+
   @wire(getUnitWrapper, { unitId: "$unitId" })
   wireUnitWrapper({ data, error }) {
     if (data) {
       this.parseWrapper(data);
     } else if (error) {
-      console.log("error unitView: ", error);
+      console.log("unitView", error);
     }
+  }
+
+  checkQuiz() {
+    this.setLoading(true);
+    const questionAnswer = JSON.stringify(this.userResponse);
+    unitResponseProcess({ unitId: this.unitId, questionAnswer })
+      .then((result) => this.handleQuizResult(result))
+      .catch((error) => this.handleQuizError(error))
+      .finally(() => this.setLoading(false));
   }
 
   parseWrapper(stringFormatData) {
@@ -39,8 +73,6 @@ export default class UnitView extends LightningElement {
     this.setBasicInfo(unitWrapper);
     this.setQuestionWithAnswers(unitWrapper);
     this.setLoading(false);
-
-    console.log("unitWrapper unitView: ", unitWrapper);
   }
 
   setBasicInfo({ unit }) {
@@ -69,6 +101,10 @@ export default class UnitView extends LightningElement {
     }));
   }
 
+  showQuizResult(config) {
+    this.dispatchEvent(new ShowToastEvent(config));
+  }
+
   setLoading(value) {
     this.isLoading = value;
   }
@@ -78,5 +114,25 @@ export default class UnitView extends LightningElement {
   }
   set recordId(value) {
     this.unitId = value;
+  }
+
+  get checkQuizText() {
+    return `Check the Quiz to Earn ${this.pointsToEarn} Point`;
+  }
+
+  countFailAttempt() {
+    this.failedAttempts += 1;
+  }
+  get pointsToEarn() {
+    let points;
+    if (this.failedAttempts === 0) {
+      points = this.points;
+    } else if (this.failedAttempts === 1) {
+      points = this.points * 0.5;
+    } else {
+      points = this.points * 0.25;
+    }
+
+    return points;
   }
 }
