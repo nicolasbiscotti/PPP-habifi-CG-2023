@@ -1,11 +1,17 @@
 import getUnitWrapper from "@salesforce/apex/UnitService.getUnitWrapper";
 import unitResponseProcess from "@salesforce/apex/UnitService.unitResponseProcess";
 import { LightningElement, api, wire } from "lwc";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
+
+const ERROR = "Wrong answer";
+const SUCCES_VARIANT = "success";
+const ERROR_VARIANT = "error";
 
 export default class UnitView extends LightningElement {
   unitId;
 
   isLoading = true;
+  failedAttempts = 0;
 
   name;
   points;
@@ -31,10 +37,17 @@ export default class UnitView extends LightningElement {
   }
 
   handleQuizResult(result) {
-    
+    const toShow = { title: result };
+    if (result !== ERROR) {
+      toShow.variant = SUCCES_VARIANT;
+    } else {
+      toShow.variant = ERROR_VARIANT;
+      this.countFailAttempt();
+    }
+    this.showQuizResult(toShow);
   }
   handleQuizError(error) {
-    
+    console.log("unitView", error);
   }
 
   @wire(getUnitWrapper, { unitId: "$unitId" })
@@ -42,15 +55,13 @@ export default class UnitView extends LightningElement {
     if (data) {
       this.parseWrapper(data);
     } else if (error) {
-      
+      console.log("unitView", error);
     }
   }
 
   checkQuiz() {
     this.setLoading(true);
     const questionAnswer = JSON.stringify(this.userResponse);
-    
-    
     unitResponseProcess({ unitId: this.unitId, questionAnswer })
       .then((result) => this.handleQuizResult(result))
       .catch((error) => this.handleQuizError(error))
@@ -62,8 +73,6 @@ export default class UnitView extends LightningElement {
     this.setBasicInfo(unitWrapper);
     this.setQuestionWithAnswers(unitWrapper);
     this.setLoading(false);
-
-    
   }
 
   setBasicInfo({ unit }) {
@@ -92,6 +101,10 @@ export default class UnitView extends LightningElement {
     }));
   }
 
+  showQuizResult(config) {
+    this.dispatchEvent(new ShowToastEvent(config));
+  }
+
   setLoading(value) {
     this.isLoading = value;
   }
@@ -104,6 +117,22 @@ export default class UnitView extends LightningElement {
   }
 
   get checkQuizText() {
-    return `Check the Quiz to Earn ${this.points} Point`;
+    return `Check the Quiz to Earn ${this.pointsToEarn} Point`;
+  }
+
+  countFailAttempt() {
+    this.failedAttempts += 1;
+  }
+  get pointsToEarn() {
+    let points;
+    if (this.failedAttempts === 0) {
+      points = this.points;
+    } else if (this.failedAttempts === 1) {
+      points = this.points * 0.5;
+    } else {
+      points = this.points * 0.25;
+    }
+
+    return points;
   }
 }
