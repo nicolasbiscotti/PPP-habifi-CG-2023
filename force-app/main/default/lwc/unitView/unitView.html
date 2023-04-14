@@ -1,8 +1,8 @@
 <template>
-  <div class="slds-m-around_medium">
-    <h1 class="slds-text-heading_large">{name}</h1>
+  <lightning-card class="slds-m-around_medium slds-p-horizontal_medium">
+    <h1 class="slds-p-horizontal_medium slds-text-heading_large">{name}</h1>
 
-    <p class="slds-text-body_regular">
+    <p class="slds-p-horizontal_medium slds-text-body_regular">
       Points: {points} - Estimated Time: {duration}
     </p>
 
@@ -11,7 +11,8 @@
     ></lightning-formatted-rich-text>
 
     <lightning-card>
-      <h1 slot="title">Quiz</h1>
+      <h1 slot="title" class="slds-text-heading_large slds-p-horizontal_medium">Quiz</h1>
+      <hr class="slds-m-vertical_xxx-small" />
 
       <div slot="footer">
         <lightning-button
@@ -35,5 +36,5 @@
         </lightning-card>
       </template>
     </lightning-card>
-  </div>
+  </lightning-card>
 </template>

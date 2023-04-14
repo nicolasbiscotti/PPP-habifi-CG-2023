@@ -1,0 +1,7 @@
+.unit__tail_detail {
+  cursor: pointer;
+}
+.unit__tail_detail:hover {
+  color: blue;
+  text-decoration: underline;
+}
